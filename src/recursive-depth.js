@@ -13,12 +13,37 @@ const { NotImplementedError } = require('../extensions/index.js');
  *
  */
 class DepthCalculator {
-  calculateDepth(/* arr */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  restArr = [];
+  count = 0;
+  stop = false;
+
+  calculateDepth(arr) {
+    if (this.stop) this.count = 0; // обнуление счетчика после каждого вызова класса
+    if (this.stop) this.stop = false;
+
+    this.count++;
+    if (Array.isArray(arr)) {
+      arr.forEach((item, idx) => {
+        if (Array.isArray(item)) {
+          if (item.length === 0) item.push(0);
+          this.restArr.push(...item); // поднять на 1 уровень элементы из массива
+        }
+      });
+    }
+
+    arr = [...this.restArr]; // скопировать результат
+    this.restArr = []; // обнуление после каждой рекурсии
+
+
+    if (arr.length > 0) this.calculateDepth(arr);
+
+    this.stop = true;
+    return this.count;
   }
 }
 
 module.exports = {
   DepthCalculator
 };
+
+// npm run test ./test/recursive-depth.test.js
